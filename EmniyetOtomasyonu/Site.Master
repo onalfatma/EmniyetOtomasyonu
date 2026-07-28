@@ -1,0 +1,214 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="EmniyetOtomasyonu.Site" %>
+
+<!DOCTYPE html>
+<html lang="tr">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EGM Sistem</title>
+    
+    <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/2/25/Emniyet_Genel_M%C3%BCd%C3%BCrl%C3%BC%C4%9F%C3%BC_logosu.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- SOL MENÜ (SIDEBAR) --- */
+        .sidebar {
+            width: 270px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827; /* Koyu Lacivert */
+            color: #9ca3af;
+            z-index: 1000;
+            border-right: 1px solid #1f2937;
+        }
+
+        .sidebar-brand {
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #1f2937;
+            background: #0f172a;
+        }
+        
+        .sidebar-brand img { width: 90px; margin-bottom: 10px; }
+        .sidebar-brand h4 { color: #fff; font-size: 18px; font-weight: 700; margin: 0; letter-spacing: 0.5px; }
+        .sidebar-brand span { font-size: 12px; color: #6b7280; margin-top: 5px; font-weight: 500; }
+
+        /* MENÜ LİNKLERİ */
+        .sidebar-menu { padding-top: 20px; }
+        
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .sidebar a i { width: 25px; font-size: 18px; margin-right: 10px; color: #6b7280; }
+
+        .sidebar a:hover { background: rgba(255,255,255,0.05); color: white; }
+        .sidebar a:hover i { color: #facc15; }
+
+        .sidebar a.active {
+            background: #1f2937;
+            color: white;
+            border-left: 4px solid #facc15; /* Sarı Çizgi */
+        }
+        .sidebar a.active i { color: #facc15; }
+
+
+        /* --- ÜST PANEL (HEADER) --- */
+        .top-navbar {
+            margin-left: 270px;
+            height: 70px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Arama Kutusu */
+        .search-box { position: relative; width: 350px; }
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            font-size: 14px;
+        }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+
+        /* Sağ Taraf (İkonlar ve Profil) */
+        .header-icons { display: flex; align-items: center; gap: 25px; }
+
+        .icon-wrapper { position: relative; cursor: pointer; color: #64748b; font-size: 20px; transition: 0.2s; }
+        .icon-wrapper:hover { color: #3b82f6; }
+
+        /* Bildirim Balonu (Badge) */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444; /* Kırmızı */
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .user-profile { text-align: right; margin-left: 10px; }
+        .user-profile strong { display: block; font-size: 14px; color: #1f2937; }
+        .user-profile span { font-size: 12px; color: #6b7280; }
+
+        .btn-logout {
+            background: #fee2e2; color: #ef4444; border: none;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px;
+        }
+        .btn-logout:hover { background: #ef4444; color: white; }
+
+        /* --- İÇERİK --- */
+        .content-wrapper { margin-left: 270px; padding: 30px; }
+
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <img src="Resimler/logo-emniyet-genel-mudurluu.png" alt="EGM" style="width: 100px; margin-bottom: 10px;" />
+                <h4>EGM SİSTEM</h4>
+                <span>Personel Daire Başkanlığı</span>
+            </div>
+
+            <div class="sidebar-menu">
+                <a href="Anasayfa.aspx"><i class="fas fa-chart-pie"></i> Ana Kumanda</a>
+                
+                <a href="PersonelListesi.aspx"><i class="fas fa-user-friends"></i> Personel İşlemleri</a>
+                
+                <a href="SucluListesi.aspx"><i class="fas fa-fingerprint"></i> Suçlu Kayıt & GBT</a>
+                
+                <a href="OlayKayitlari.aspx"><i class="fas fa-map-marked-alt"></i> Olay Kayıtları</a>
+                <a href="DosyaArsiv.aspx"><i class="fas fa-folder-open"></i> Raporlar & Arşiv</a>
+                <a href="Ihbarlar.aspx"><i class="fas fa-phone-alt"></i> İhbar Hattı</a>
+                <a href="Ayarlar.aspx"><i class="fas fa-cog"></i> Ayarlar</a>
+            </div>
+        </div>
+
+        <div class="top-navbar">
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <asp:TextBox ID="txtArama" runat="server" placeholder="TC, Plaka veya Dosya No ile ara..."></asp:TextBox>
+            </div>
+
+            <div class="header-icons">
+                
+                <div class="icon-wrapper" title="5 Okunmamış Mesaj">
+                    <i class="far fa-envelope"></i>
+                    <span class="notification-badge">5</span>
+                </div>
+
+                <div class="icon-wrapper" title="3 Yeni Bildirim">
+                    <i class="far fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+
+                <div class="user-profile">
+                    <strong><asp:Label ID="lblKullanici" runat="server" Text="Admin"></asp:Label></strong>
+                    <span>Sistem Yöneticisi</span>
+                </div>
+
+                <asp:LinkButton ID="btnCikis" runat="server" CssClass="btn-logout" OnClick="btnCikis_Click" ToolTip="Çıkış Yap">
+                    <i class="fas fa-sign-out-alt"></i>
+                </asp:LinkButton>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+
+    </form>
+    
+    <script>
+        // Aktif Menüyü Otomatik İşaretleyen Script
+        var path = window.location.pathname.split("/").pop();
+        if (path === "") path = "Anasayfa.aspx";
+        var links = document.querySelectorAll('.sidebar a');
+        links.forEach(function (link) {
+            if (link.getAttribute('href') === path) link.classList.add('active');
+        });
+    </script>
+</body>
+</html>
